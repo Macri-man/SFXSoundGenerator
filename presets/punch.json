@@ -1,0 +1,24 @@
+{
+    "layers": [
+        {
+            "name": "Deep Punch",
+            "waveform": "Square",
+            "freq": 100,
+            "freq_end": 0,
+            "dur": 0.2,
+            "adsr": {
+                "Attack": 0,
+                "Decay": 50,
+                "Sustain": 10,
+                "Release": 50
+            },
+            "lfo_freq": 0,
+            "lfo_depth": 0,
+            "distortion": 60,
+            "reverb": 20,
+            "filter_freq": 3000,
+            "volume": 1.0,
+            "pan": 0.5
+        }
+    ]
+}

@@ -1,0 +1,24 @@
+{
+    "layers": [
+        {
+            "name": "Whoosh Noise",
+            "waveform": "Noise",
+            "freq": 100,
+            "freq_end": 5000,
+            "dur": 0.6,
+            "adsr": {
+                "Attack": 5,
+                "Decay": 200,
+                "Sustain": 10,
+                "Release": 300
+            },
+            "lfo_freq": 0,
+            "lfo_depth": 0,
+            "distortion": 20,
+            "reverb": 40,
+            "filter_freq": 8000,
+            "volume": 1.0,
+            "pan": 0.5
+        }
+    ]
+}

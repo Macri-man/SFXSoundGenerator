@@ -1,0 +1,24 @@
+{
+    "layers": [
+        {
+            "name": "Laser Beam",
+            "waveform": "Sine",
+            "freq": 1000,
+            "freq_end": 4000,
+            "dur": 0.25,
+            "adsr": {
+                "Attack": 0,
+                "Decay": 50,
+                "Sustain": 20,
+                "Release": 50
+            },
+            "lfo_freq": 10,
+            "lfo_depth": 100,
+            "distortion": 30,
+            "reverb": 10,
+            "filter_freq": 10000,
+            "volume": 1.0,
+            "pan": 0.5
+        }
+    ]
+}

@@ -1,0 +1,24 @@
+{
+    "layers": [
+        {
+            "name": "Sparkle",
+            "waveform": "Triangle",
+            "freq": 3000,
+            "freq_end": 6000,
+            "dur": 0.25,
+            "adsr": {
+                "Attack": 0,
+                "Decay": 50,
+                "Sustain": 10,
+                "Release": 100
+            },
+            "lfo_freq": 15,
+            "lfo_depth": 30,
+            "distortion": 10,
+            "reverb": 40,
+            "filter_freq": 12000,
+            "volume": 1.0,
+            "pan": 0.5
+        }
+    ]
+}

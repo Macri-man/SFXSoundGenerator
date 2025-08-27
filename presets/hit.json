@@ -1,0 +1,24 @@
+{
+    "layers": [
+        {
+            "name": "Punch Hit",
+            "waveform": "Triangle",
+            "freq": 300,
+            "freq_end": 0,
+            "dur": 0.15,
+            "adsr": {
+                "Attack": 0,
+                "Decay": 30,
+                "Sustain": 10,
+                "Release": 40
+            },
+            "lfo_freq": 0,
+            "lfo_depth": 0,
+            "distortion": 40,
+            "reverb": 20,
+            "filter_freq": 4000,
+            "volume": 1.0,
+            "pan": 0.5
+        }
+    ]
+}

@@ -1,0 +1,24 @@
+{
+    "layers": [
+        {
+            "name": "Power-Up Tone",
+            "waveform": "Sine",
+            "freq": 400,
+            "freq_end": 2000,
+            "dur": 0.5,
+            "adsr": {
+                "Attack": 0,
+                "Decay": 100,
+                "Sustain": 40,
+                "Release": 200
+            },
+            "lfo_freq": 5,
+            "lfo_depth": 50,
+            "distortion": 0,
+            "reverb": 30,
+            "filter_freq": 10000,
+            "volume": 1.0,
+            "pan": 0.5
+        }
+    ]
+}

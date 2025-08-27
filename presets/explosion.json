@@ -1,0 +1,24 @@
+{
+    "layers": [
+        {
+            "name": "Explosion Noise",
+            "waveform": "Noise",
+            "freq": 100,
+            "freq_end": 2000,
+            "dur": 1.0,
+            "adsr": {
+                "Attack": 0,
+                "Decay": 200,
+                "Sustain": 10,
+                "Release": 500
+            },
+            "lfo_freq": 0,
+            "lfo_depth": 0,
+            "distortion": 60,
+            "reverb": 50,
+            "filter_freq": 8000,
+            "volume": 1.0,
+            "pan": 0.5
+        }
+    ]
+}

@@ -1,6 +1,8 @@
 from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QComboBox, QInputDialog, QLabel
+import copy
 
 class LayerSelector(QWidget):
+    """Layer management: select, add, delete, copy/paste, rename"""
     def __init__(self, layers, layer_changed_callback):
         super().__init__()
         self.layers = layers
@@ -11,30 +13,26 @@ class LayerSelector(QWidget):
         self.layout = QHBoxLayout()
         self.setLayout(self.layout)
 
+        # Layer dropdown
         self.selector = QComboBox()
         self.selector.currentIndexChanged.connect(self.change_layer)
         self.layout.addWidget(QLabel("Layer:"))
         self.layout.addWidget(self.selector)
 
+        # Buttons
         self.rename_btn = QPushButton("Rename")
         self.rename_btn.clicked.connect(self.rename_layer)
-        self.layout.addWidget(self.rename_btn)
-
         self.copy_btn = QPushButton("Copy")
         self.copy_btn.clicked.connect(self.copy_layer)
-        self.layout.addWidget(self.copy_btn)
-
         self.paste_btn = QPushButton("Paste")
         self.paste_btn.clicked.connect(self.paste_layer)
-        self.layout.addWidget(self.paste_btn)
-
         self.add_btn = QPushButton("Add")
         self.add_btn.clicked.connect(self.add_layer)
-        self.layout.addWidget(self.add_btn)
-
         self.delete_btn = QPushButton("Delete")
         self.delete_btn.clicked.connect(self.delete_layer)
-        self.layout.addWidget(self.delete_btn)
+
+        for btn in [self.rename_btn, self.copy_btn, self.paste_btn, self.add_btn, self.delete_btn]:
+            self.layout.addWidget(btn)
 
         self.update_selector()
 
@@ -53,14 +51,14 @@ class LayerSelector(QWidget):
     def add_layer(self):
         from layer import Layer
         self.layers.append(Layer(name=f"Layer {len(self.layers)+1}"))
-        self.current_index = len(self.layers) - 1
+        self.current_index = len(self.layers)-1
         self.update_selector()
 
     def delete_layer(self):
         if len(self.layers) <= 1:
             return
         self.layers.pop(self.current_index)
-        self.current_index = max(0, self.current_index - 1)
+        self.current_index = max(0, self.current_index-1)
         self.update_selector()
 
     def rename_layer(self):
@@ -71,33 +69,9 @@ class LayerSelector(QWidget):
             self.update_selector()
 
     def copy_layer(self):
-        import copy
         self.clipboard_layer = copy.deepcopy(self.layers[self.current_index])
 
     def paste_layer(self):
         if self.clipboard_layer:
-            import copy
             self.layers[self.current_index] = copy.deepcopy(self.clipboard_layer)
             self.update_selector()
-
-
-class ControlButtons(QWidget):
-    """
-    Play, Save, and Random SFX buttons with external callbacks.
-    """
-    def __init__(self, play_callback, save_callback, random_callback):
-        super().__init__()
-        layout = QHBoxLayout()
-        self.setLayout(layout)
-
-        self.play_btn = QPushButton("Play SFX")
-        self.play_btn.clicked.connect(play_callback)
-        layout.addWidget(self.play_btn)
-
-        self.save_btn = QPushButton("Save SFX")
-        self.save_btn.clicked.connect(save_callback)
-        layout.addWidget(self.save_btn)
-
-        self.random_btn = QPushButton("Random SFX")
-        self.random_btn.clicked.connect(random_callback)
-        layout.addWidget(self.random_btn)

@@ -1,0 +1,24 @@
+{
+    "layers": [
+        {
+            "name": "Riser",
+            "waveform": "Sawtooth",
+            "freq": 100,
+            "freq_end": 5000,
+            "dur": 1.5,
+            "adsr": {
+                "Attack": 0,
+                "Decay": 300,
+                "Sustain": 10,
+                "Release": 200
+            },
+            "lfo_freq": 0,
+            "lfo_depth": 0,
+            "distortion": 10,
+            "reverb": 20,
+            "filter_freq": 12000,
+            "volume": 1.0,
+            "pan": 0.5
+        }
+    ]
+}

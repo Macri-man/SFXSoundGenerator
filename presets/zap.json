@@ -1,0 +1,44 @@
+{
+    "layers": [
+        {
+            "name": "Zap High",
+            "waveform": "Sine",
+            "freq": 2000,
+            "freq_end": 5000,
+            "dur": 0.15,
+            "adsr": {
+                "Attack": 0,
+                "Decay": 50,
+                "Sustain": 20,
+                "Release": 50
+            },
+            "lfo_freq": 10,
+            "lfo_depth": 50,
+            "distortion": 70,
+            "reverb": 10,
+            "filter_freq": 8000,
+            "volume": 1.0,
+            "pan": 0.5
+        },
+        {
+            "name": "Zap Noise",
+            "waveform": "Noise",
+            "freq": 1000,
+            "freq_end": 2000,
+            "dur": 0.12,
+            "adsr": {
+                "Attack": 0,
+                "Decay": 30,
+                "Sustain": 10,
+                "Release": 30
+            },
+            "lfo_freq": 5,
+            "lfo_depth": 20,
+            "distortion": 50,
+            "reverb": 20,
+            "filter_freq": 5000,
+            "volume": 0.7,
+            "pan": 0.3
+        }
+    ]
+}

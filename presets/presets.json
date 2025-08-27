@@ -1,0 +1,117 @@
+{
+  "Explosion": {
+    "layers": [
+      {
+        "waveform": "Noise",
+        "freq": 50,
+        "freq_end": 0,
+        "dur": 1.0,
+        "volume": 1.0,
+        "pan": 0.5,
+        "lfo_freq": 5,
+        "lfo_depth": 200,
+        "adsr": {
+          "Attack": 0,
+          "Decay": 200,
+          "Sustain": 0,
+          "Release": 800
+        },
+        "filter_freq": 5000,
+        "distortion": 50,
+        "reverb": 30
+      }
+    ]
+  },
+  "Laser": {
+    "layers": [
+      {
+        "waveform": "Sawtooth",
+        "freq": 800,
+        "freq_end": 1200,
+        "dur": 0.3,
+        "volume": 0.8,
+        "pan": 0.5,
+        "lfo_freq": 30,
+        "lfo_depth": 50,
+        "adsr": {
+          "Attack": 0,
+          "Decay": 50,
+          "Sustain": 0,
+          "Release": 100
+        },
+        "filter_freq": 8000,
+        "distortion": 20,
+        "reverb": 10
+      }
+    ]
+  },
+  "Riser": {
+    "layers": [
+      {
+        "waveform": "Sine",
+        "freq": 200,
+        "freq_end": 2000,
+        "dur": 2.0,
+        "volume": 0.6,
+        "pan": 0.5,
+        "lfo_freq": 0,
+        "lfo_depth": 0,
+        "adsr": {
+          "Attack": 0,
+          "Decay": 0,
+          "Sustain": 100,
+          "Release": 100
+        },
+        "filter_freq": 10000,
+        "distortion": 0,
+        "reverb": 50
+      }
+    ]
+  },
+  "Impact": {
+    "layers": [
+      {
+        "waveform": "Noise",
+        "freq": 100,
+        "freq_end": 0,
+        "dur": 0.2,
+        "volume": 1.0,
+        "pan": 0.5,
+        "lfo_freq": 0,
+        "lfo_depth": 0,
+        "adsr": {
+          "Attack": 0,
+          "Decay": 30,
+          "Sustain": 0,
+          "Release": 50
+        },
+        "filter_freq": 4000,
+        "distortion": 30,
+        "reverb": 20
+      }
+    ]
+  },
+  "Hit": {
+    "layers": [
+      {
+        "waveform": "Square",
+        "freq": 500,
+        "freq_end": 500,
+        "dur": 0.1,
+        "volume": 0.9,
+        "pan": 0.5,
+        "lfo_freq": 0,
+        "lfo_depth": 0,
+        "adsr": {
+          "Attack": 0,
+          "Decay": 10,
+          "Sustain": 0,
+          "Release": 30
+        },
+        "filter_freq": 6000,
+        "distortion": 10,
+        "reverb": 5
+      }
+    ]
+  }
+}

@@ -32,16 +32,36 @@ class PresetManager:
     def load_preset(path: str):
         with open(path, "r") as f:
             data = json.load(f)
-        layers = []
-        for layer_data in data.get("layers", []):
-            layer = Layer()
-            for key, val in layer_data.items():
-                setattr(layer, key, val)
-            layers.append(layer)
+        layers = [Layer.from_dict(d) for d in data.get("layers", [])]
         return layers
 
     @staticmethod
     def save_preset(path: str, layers: list):
-        data = {"layers":[{k:getattr(layer,k) for k in vars(layer)} for layer in layers]}
+        data = {"layers": [layer.to_dict() for layer in layers]}
         with open(path, "w") as f:
             json.dump(data, f, indent=4)
+
+    @staticmethod
+    def generate_layer_from_preset(preset_name):
+        """
+        Returns a list of Layer objects based on the preset name.
+        """
+        preset_data = DEFAULT_PRESETS.get(preset_name, [])
+        layers = []
+        for layer_dict in preset_data:
+            full_layer = {
+                "waveform": layer_dict.get("waveform", "Sine"),
+                "freq": layer_dict.get("freq", 440),
+                "freq_end": layer_dict.get("freq_end", layer_dict.get("freq", 440)),
+                "dur": layer_dict.get("dur", 1.0),
+                "adsr": layer_dict.get("adsr", {"Attack":0,"Decay":100,"Sustain":50,"Release":100}),
+                "lfo_freq": layer_dict.get("lfo_freq", 0.0),
+                "lfo_depth": layer_dict.get("lfo_depth", 0.0),
+                "distortion": layer_dict.get("distortion", 0),
+                "reverb": layer_dict.get("reverb", 0),
+                "filter_freq": layer_dict.get("filter_freq", 8000),
+                "volume": layer_dict.get("volume", 1.0),
+                "pan": layer_dict.get("pan", 0.5)
+            }
+            layers.append(Layer.from_dict(full_layer))
+        return layers

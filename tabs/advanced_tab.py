@@ -42,18 +42,19 @@ class AdvancedTab(QWidget):
         layout = QVBoxLayout()
         group.setLayout(layout)
 
+        # LFO Frequency scaled by 10 for float precision
         self.lfo_freq_label = QLabel("LFO Frequency: 0 Hz")
         self.lfo_freq_slider = QSlider()
         self.lfo_freq_slider.setMinimum(0)
-        self.lfo_freq_slider.setMaximum(20)
-        self.lfo_freq_slider.valueChanged.connect(lambda val: self._update_lfo("freq", val))
+        self.lfo_freq_slider.setMaximum(200)  # 0.0 to 20.0 Hz scaled by 10
+        self.lfo_freq_slider.valueChanged.connect(lambda val: self._update_lfo("freq", val/10))
         layout.addWidget(self.lfo_freq_label)
         layout.addWidget(self.lfo_freq_slider)
 
         self.lfo_depth_label = QLabel("LFO Depth: 0 Hz")
         self.lfo_depth_slider = QSlider()
         self.lfo_depth_slider.setMinimum(0)
-        self.lfo_depth_slider.setMaximum(200)
+        self.lfo_depth_slider.setMaximum(200)  # depth 0-200
         self.lfo_depth_slider.valueChanged.connect(lambda val: self._update_lfo("depth", val))
         layout.addWidget(self.lfo_depth_label)
         layout.addWidget(self.lfo_depth_slider)
@@ -90,7 +91,11 @@ class AdvancedTab(QWidget):
         layout.addWidget(self.filter_label)
         layout.addWidget(self.filter_slider)
 
-        self.fx_sliders = {"distortion": self.dist_slider, "reverb": self.reverb_slider, "filter_freq": self.filter_slider}
+        self.fx_sliders = {
+            "distortion": self.dist_slider,
+            "reverb": self.reverb_slider,
+            "filter_freq": self.filter_slider
+        }
         self.layout.addWidget(group)
 
     # ------------------- Load Layer -------------------
@@ -98,8 +103,10 @@ class AdvancedTab(QWidget):
         layer = self.layers[self.current_index]
         for param in ["Attack","Decay","Sustain","Release"]:
             self.adsr_sliders[param].setValue(layer.adsr.get(param,0))
-        self.lfo_freq_slider.setValue(layer.lfo_freq)
-        self.lfo_depth_slider.setValue(layer.lfo_depth)
+
+        # Cast floats to int (scaled if needed)
+        self.lfo_freq_slider.setValue(int(layer.lfo_freq * 10))  # scaled
+        self.lfo_depth_slider.setValue(int(layer.lfo_depth))
         self.dist_slider.setValue(layer.distortion)
         self.reverb_slider.setValue(layer.reverb)
         self.filter_slider.setValue(layer.filter_freq)
@@ -115,7 +122,7 @@ class AdvancedTab(QWidget):
         layer = self.layers[self.current_index]
         if typ=="freq":
             layer.lfo_freq = value
-            self.lfo_freq_label.setText(f"LFO Frequency: {value} Hz")
+            self.lfo_freq_label.setText(f"LFO Frequency: {value:.1f} Hz")
         else:
             layer.lfo_depth = value
             self.lfo_depth_label.setText(f"LFO Depth: {value} Hz")
@@ -128,6 +135,6 @@ class AdvancedTab(QWidget):
             self.dist_label.setText(f"Distortion: {value}%")
         elif param=="reverb":
             self.reverb_label.setText(f"Reverb: {value}%")
-        elif param=="filter_freq":
+        else:
             self.filter_label.setText(f"Lowpass Filter: {value} Hz")
         self.update_callback()

@@ -6,16 +6,48 @@ from layer import Layer
 SAMPLE_RATE = 44100
 
 def apply_adsr(length, adsr):
-    attack = int(SAMPLE_RATE * adsr.get("Attack", 0) / 1000)
-    decay = int(SAMPLE_RATE * adsr.get("Decay", 0) / 1000)
+    attack = int(adsr.get("Attack", 0) * SAMPLE_RATE / 1000)
+    decay = int(adsr.get("Decay", 0) * SAMPLE_RATE / 1000)
+    release = int(adsr.get("Release", 0) * SAMPLE_RATE / 1000)
     sustain_level = adsr.get("Sustain", 100) / 100
-    release = int(SAMPLE_RATE * adsr.get("Release", 0) / 1000)
+
+    # Ensure lengths do not exceed total
+    total = attack + decay + release
+    if total > length:
+        scale = length / total
+        attack = int(attack * scale)
+        decay = int(decay * scale)
+        release = int(release * scale)
+
     sustain_length = max(length - (attack + decay + release), 0)
+
     env = np.zeros(length)
-    if attack > 0: env[:attack] = np.linspace(0, 1, attack, endpoint=False)
-    if decay > 0: env[attack:attack + decay] = np.linspace(1, sustain_level, decay, endpoint=False)
-    if sustain_length > 0: env[attack + decay:attack + decay + sustain_length] = sustain_level
-    if release > 0: env[-release:] = np.linspace(sustain_level, 0, release, endpoint=True)
+
+    idx = 0
+    # Attack
+    if attack > 0:
+        env[idx:idx+attack] = np.linspace(0, 1, attack, endpoint=False)
+        idx += attack
+
+    # Decay
+    if decay > 0:
+        env[idx:idx+decay] = np.linspace(1, sustain_level, decay, endpoint=False)
+        idx += decay
+
+    # Sustain
+    if sustain_length > 0:
+        env[idx:idx+sustain_length] = sustain_level
+        idx += sustain_length
+
+    # Release
+    if release > 0:
+        env[idx:idx+release] = np.linspace(sustain_level, 0, release, endpoint=False)
+        idx += release
+
+    # Safety check: fill any remaining samples
+    if idx < length:
+        env[idx:] = 0
+
     return env
 
 def generate_layer_wave(layer: Layer) -> np.ndarray:

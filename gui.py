@@ -4,18 +4,18 @@ import random
 import numpy as np
 import sounddevice as sd
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel,
-    QComboBox, QPushButton, QFileDialog, QCheckBox
+    QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QLabel, QComboBox,
+    QPushButton, QFileDialog, QCheckBox
 )
 from PyQt6.QtCore import QTimer
 
 from layer import Layer
 from synth import generate_final_wave
 from preset_manager import DEFAULT_PRESETS, PresetManager
+from controls.layer_selector import LayerSelector
+from controls.control_buttons import ControlButtons
 from tabs.basic_tab import BasicTab
 from tabs.advanced_tab import AdvancedTab
-from controls.control_buttons import ControlButtons
-from controls.layer_selector import LayerSelector
 
 SAMPLE_RATE = 44100
 
@@ -25,31 +25,25 @@ class SFXGenerator(QWidget):
         self.setWindowTitle("SFX Generator")
 
         # Layer management
-        self.layers = [Layer()]
+        self.layers = [Layer(name="Layer 1")]
         self.current_index = 0
 
-        # Preview timer
+        # Playback debounce timer
         self._preview_timer = QTimer()
         self._preview_timer.setSingleShot(True)
         self._preview_timer.timeout.connect(self._play_preview)
 
-        # Layout
+        # Main layout
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
-        # Tabs
+        # Setup UI
         self._setup_tabs()
-
-        # Layer selector
         self._setup_layer_selector()
-
-        # Presets
         self._setup_presets()
-
-        # Control buttons
         self._setup_controls()
 
-    # ------------------- Setup UI -------------------
+    # ------------------- UI Setup -------------------
     def _setup_tabs(self):
         self.tabs = QTabWidget()
         self.basic_tab = BasicTab(self.layers, self.current_index, self.update_wave)
@@ -96,7 +90,7 @@ class SFXGenerator(QWidget):
         )
         self.layout.addWidget(self.controls)
 
-    # ------------------- Layer management -------------------
+    # ------------------- Layer Management -------------------
     def change_layer(self, index):
         self.current_index = index
         self.basic_tab.current_index = index
@@ -107,7 +101,7 @@ class SFXGenerator(QWidget):
     # ------------------- Wave / Playback -------------------
     def update_wave(self):
         if getattr(self, "preview_checkbox", None) and self.preview_checkbox.isChecked():
-            self._preview_timer.start(100)  # debounce
+            self._preview_timer.start(100)  # debounce 100ms
 
     def _play_preview(self):
         sd.stop()
@@ -128,11 +122,11 @@ class SFXGenerator(QWidget):
         write(path, SAMPLE_RATE, (wave * 32767).astype(np.int16))
 
     # ------------------- Presets -------------------
-    def apply_preset(self, name):
-        if name == "Random":
+    def apply_preset(self, preset_name):
+        if preset_name == "Random":
             self.random_sfx()
             return
-        self.layers = PresetManager.generate_layer_from_preset(name)
+        self.layers = PresetManager.generate_layer_from_preset(preset_name)
         self.current_index = 0
         self._update_layer_widgets()
         self.update_wave()
@@ -152,7 +146,7 @@ class SFXGenerator(QWidget):
             return
         PresetManager.save_preset(path, self.layers)
 
-    # ------------------- Random -------------------
+    # ------------------- Random SFX -------------------
     def random_sfx(self):
         self.layers = [self._random_layer() for _ in self.layers]
         self.current_index = 0
@@ -161,6 +155,7 @@ class SFXGenerator(QWidget):
 
     def _random_layer(self):
         layer_data = {
+            "name": f"Layer {random.randint(1,99)}",
             "waveform": random.choice(["Sine", "Square", "Triangle", "Sawtooth", "Noise"]),
             "freq": random.randint(100, 4000),
             "freq_end": None,

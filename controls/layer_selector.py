@@ -1,65 +1,71 @@
-from PyQt6.QtWidgets import QWidget, QHBoxLayout, QPushButton, QComboBox, QInputDialog, QLabel
+from PyQt6.QtWidgets import QWidget, QComboBox, QVBoxLayout, QPushButton, QHBoxLayout, QInputDialog
+from layer import Layer
 import copy
 
 class LayerSelector(QWidget):
-    """Layer management: select, add, delete, copy/paste, rename"""
-    def __init__(self, layers, layer_changed_callback):
+    """
+    Dropdown to select active layer and optionally add/remove layers.
+    """
+    def __init__(self, layers: list[Layer], change_callback):
         super().__init__()
         self.layers = layers
-        self.layer_changed_callback = layer_changed_callback
-        self.current_index = 0
-        self.clipboard_layer = None
+        self.change_callback = change_callback
 
-        self.layout = QHBoxLayout()
+        self.layout = QVBoxLayout()
         self.setLayout(self.layout)
 
-        # Layer dropdown
+        # Dropdown for selecting layers
+        self.selector_layout = QHBoxLayout()
         self.selector = QComboBox()
-        self.selector.currentIndexChanged.connect(self.change_layer)
-        self.layout.addWidget(QLabel("Layer:"))
-        self.layout.addWidget(self.selector)
+        self.selector.currentIndexChanged.connect(self._layer_changed)
+        self.selector_layout.addWidget(self.selector)
 
-        # Buttons
-        self.rename_btn = QPushButton("Rename")
-        self.rename_btn.clicked.connect(self.rename_layer)
-        self.copy_btn = QPushButton("Copy")
-        self.copy_btn.clicked.connect(self.copy_layer)
-        self.paste_btn = QPushButton("Paste")
-        self.paste_btn.clicked.connect(self.paste_layer)
-        self.add_btn = QPushButton("Add")
+        # Optional: Add layer button
+        self.add_btn = QPushButton("+")
+        self.add_btn.setFixedWidth(30)
         self.add_btn.clicked.connect(self.add_layer)
-        self.delete_btn = QPushButton("Delete")
-        self.delete_btn.clicked.connect(self.delete_layer)
+        self.selector_layout.addWidget(self.add_btn)
 
-        for btn in [self.rename_btn, self.copy_btn, self.paste_btn, self.add_btn, self.delete_btn]:
-            self.layout.addWidget(btn)
+        # Optional: Remove layer button
+        self.remove_btn = QPushButton("-")
+        self.remove_btn.setFixedWidth(30)
+        self.remove_btn.clicked.connect(self.remove_layer)
+        self.selector_layout.addWidget(self.remove_btn)
 
+        self.layout.addLayout(self.selector_layout)
+
+        # Initialize dropdown
         self.update_selector()
 
+    # ------------------- Selector -------------------
     def update_selector(self):
         self.selector.clear()
         for i, layer in enumerate(self.layers):
-            self.selector.addItem(f"{i+1}: {layer.name}")
-        self.selector.setCurrentIndex(self.current_index)
-        self.layer_changed_callback(self.current_index)
+            self.selector.addItem(f"{i+1}: {getattr(layer,'name','Layer')}")
 
-    def change_layer(self, index):
-        if 0 <= index < len(self.layers):
-            self.current_index = index
-            self.layer_changed_callback(self.current_index)
+    def _layer_changed(self, index):
+        if index >= 0 and index < len(self.layers):
+            self.change_callback(index)
 
+    # ------------------- Add / Remove Layers -------------------
     def add_layer(self):
-        from layer import Layer
-        self.layers.append(Layer(name=f"Layer {len(self.layers)+1}"))
-        self.current_index = len(self.layers)-1
+        new_layer = Layer(name=f"Layer {len(self.layers)+1}")
+        self.layers.append(new_layer)
         self.update_selector()
+        self.selector.setCurrentIndex(len(self.layers)-1)
+        self.change_callback(len(self.layers)-1)
 
-    def delete_layer(self):
+    def remove_layer(self):
+        index = self.selector.currentIndex()
         if len(self.layers) <= 1:
-            return
-        self.layers.pop(self.current_index)
-        self.current_index = max(0, self.current_index-1)
-        self.update_selector()
+            return  # Keep at least one layer
+        if index >= 0 and index < len(self.layers):
+            self.layers.pop(index)
+            self.update_selector()
+            # Select previous layer if possible
+            new_index = max(0, index-1)
+            self.selector.setCurrentIndex(new_index)
+            self.change_callback(new_index)
 
     def rename_layer(self):
         layer = self.layers[self.current_index]
